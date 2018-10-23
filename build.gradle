@@ -1,0 +1,49 @@
+import static java.lang.System.*
+
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://repo.maven.apache.org/maven2'
+        }
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'net.serenity-bdd:serenity-gradle-plugin:1.9.36'
+        classpath 'gradle.plugin.SauceConnectPlugin:Gradle-Sauce-Connect-Plugin:0.0.12'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'net.serenity-bdd.aggregator'
+apply plugin: 'com.saucelabs.SauceConnectPlugin'
+
+repositories {
+    maven {
+        url 'https://repo.maven.apache.org/maven2'
+    }
+    maven {
+        url 'https://plugins.gradle.org/m2/'
+    }
+}
+
+dependencies {
+    testCompile(
+            'net.serenity-bdd:serenity-junit:1.9.36',
+            'net.serenity-bdd:serenity-cucumber:1.9.14',
+            'org.assertj:assertj-core:3.10.0',
+            'ch.qos.logback:logback-classic:1.2.3',
+            'com.saucelabs:saucerest:1.0.39'
+    )
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties getProperties() as HashMap<String, ?>
+}
+
+gradle.startParameter.continueOnFailure = true
+
