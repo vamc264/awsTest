@@ -10,25 +10,29 @@ import org.junit.Rule;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
+import org.testobject.appium.junit.TestObjectTestResultWatcher;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.karmarama.qa.core.Properties.*;
-import static com.karmarama.qa.core.SauceLabsWatcher.accessKey;
-import static com.karmarama.qa.core.SauceLabsWatcher.username;
 import static io.appium.java_client.remote.AndroidMobileCapabilityType.APP_ACTIVITY;
 import static io.appium.java_client.remote.AndroidMobileCapabilityType.APP_PACKAGE;
 import static io.appium.java_client.remote.IOSMobileCapabilityType.BUNDLE_ID;
 import static io.appium.java_client.remote.MobileCapabilityType.*;
+import static java.lang.System.getenv;
 import static net.thucydides.core.webdriver.ThucydidesWebDriverSupport.getDriver;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.TAKES_SCREENSHOT;
+import static org.testobject.rest.api.appium.common.TestObjectCapabilities.TESTOBJECT_API_KEY;
 
 public class SharedDriver implements DriverSource {
 
     @Rule
     private SauceLabsWatcher sauceLabsWatcher = new SauceLabsWatcher();
+
+    @Rule
+    public TestObjectTestResultWatcher resultWatcher = new TestObjectTestResultWatcher();
 
     private static Scenario scenario;
     private static String platform = Properties.getPlatformName();
@@ -79,19 +83,18 @@ public class SharedDriver implements DriverSource {
         capabilities.setCapability(APP_ACTIVITY, getAppActivity());
         capabilities.setCapability(AUTOMATION_NAME, isPlatformIos() ? "XCUITest" : "UiAutomator2");
         capabilities.setCapability(isPlatformIos() ? BUNDLE_ID : APP_PACKAGE, getBundleId());
-
-
-        capabilities.setCapability("name", scenario.getName());
-        capabilities.setCapability("tunnel-identifier", username);
         capabilities.setCapability("commandTimeout", 450);
         capabilities.setCapability(FULL_RESET,getFullReset());
         capabilities.setCapability(NO_RESET,getNoReset());
+
+
+        capabilities.setCapability(TESTOBJECT_API_KEY, getenv("TESTOBJECT_API_KEY"));
+        capabilities.setCapability("testobject_test_name", scenario.getName());
     }
 
     private URL getRemoteUrl() {
         try {
-            return new URL("http://" + username + ":" + accessKey + "@ondemand.saucelabs.com:80/wd/hub");
-//            return new URL("http://127.0.0.1:4723/wd/hub");
+            return new URL("https://us1.appium.testobject.com/wd/hub");
         } catch (MalformedURLException e) {
             throw new UnreachableBrowserException(e.getMessage());
         }

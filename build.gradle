@@ -36,7 +36,8 @@ dependencies {
             'net.serenity-bdd:serenity-cucumber:1.9.14',
             'org.assertj:assertj-core:3.10.0',
             'ch.qos.logback:logback-classic:1.2.3',
-            'com.saucelabs:saucerest:1.0.39'
+            'com.saucelabs:saucerest:1.0.39',
+            'org.testobject:testobject-appium-java-api:0.2.7'
     )
 }
 
